@@ -144,6 +144,9 @@ dmypy.json
 ehthumbs.db
 Thumbs.db
 
+# Claude Code settings
+.claude/
+
 # Project specific
 mysql_config.json
 *.log
