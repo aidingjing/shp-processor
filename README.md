@@ -24,10 +24,12 @@ pip install -r requirements.txt
 ```
 
 ### Windows用户注意事项
-如果geopandas安装失败，建议使用conda：
+如果某些依赖包安装失败，建议使用conda：
 ```bash
-conda install -c conda-forge geopandas
+conda install -c conda-forge geopandas shapely rtree
 ```
+
+注意：项目不再直接依赖GDAL，geopandas会自动处理所需的空间数据处理库。
 
 ## 快速开始
 

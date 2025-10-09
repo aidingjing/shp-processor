@@ -1,0 +1,17 @@
+# 核心依赖 - 使用pip安装
+pandas>=1.5.0
+shapely>=2.0.0
+pymysql>=1.0.0
+numpy>=1.21.0
+pyproj>=3.4.0
+openpyxl>=3.0.0
+
+# 空间数据处理 - 如果pip安装失败，请使用conda
+# geopandas>=0.13.0  # pip版本可能在Windows上有问题
+# rtree>=1.0.0      # pip版本可能在Windows上有问题
+
+# conda安装命令：
+# conda install -c conda-forge geopandas shapely rtree
+
+# 或者使用mamba（更快）：
+# mamba install -c conda-forge geopandas shapely rtree

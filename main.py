@@ -42,7 +42,9 @@ def check_dependencies():
         ('shapely', 'shapely'),
         ('pymysql', 'pymysql'),
         ('numpy', 'numpy'),
-        ('pyproj', 'pyproj')
+        ('pyproj', 'pyproj'),
+        ('rtree', 'rtree'),
+        ('openpyxl', 'openpyxl')
     ]
 
     missing_packages = []
@@ -158,8 +160,8 @@ def show_help():
 
 常见问题:
 1. 如果遇到依赖包缺失，请运行: pip install -r requirements.txt
-2. 如果geopandas安装失败，请先安装GDAL库
-3. Windows用户建议使用conda安装geopandas
+2. 如果geopandas安装失败，建议使用conda: conda install -c conda-forge geopandas
+3. 如果rtree安装失败，建议使用conda: conda install -c conda-forge rtree
 
 技术支持:
 如有问题请联系开发团队或提交issue到项目仓库
