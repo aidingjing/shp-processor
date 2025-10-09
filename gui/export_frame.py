@@ -36,69 +36,74 @@ class ExportFrame(tk.Frame):
     def create_widgets(self):
         """创建界面组件"""
         # 标题
-        title_label = tk.Label(self, text="SHP文件导出配置", font=("Arial", 14, "bold"))
-        title_label.grid(row=0, column=0, columnspan=3, pady=(10, 20))
+        title_label = tk.Label(self, text="SHP文件导出配置", font=("Arial", 11, "bold"))
+        title_label.grid(row=0, column=0, columnspan=3, pady=(5, 8))
 
         # 导出预览区域
-        preview_frame = tk.LabelFrame(self, text="导出预览", padx=10, pady=10)
-        preview_frame.grid(row=1, column=0, columnspan=3, padx=10, pady=5, sticky="ew")
+        preview_frame = tk.LabelFrame(self, text="导出预览", padx=6, pady=6)
+        preview_frame.grid(row=1, column=0, columnspan=3, padx=6, pady=3, sticky="ew")
 
         # 显示字段和几何类型信息
-        self.field_info_label = tk.Label(preview_frame, text="未选择字段", fg="gray")
-        self.field_info_label.grid(row=0, column=0, sticky="w", pady=5)
+        self.field_info_label = tk.Label(preview_frame, text="未选择字段", fg="gray", font=("Arial", 8))
+        self.field_info_label.grid(row=0, column=0, sticky="w", pady=2)
 
-        self.geometry_info_label = tk.Label(preview_frame, text="未确定几何类型", fg="gray")
-        self.geometry_info_label.grid(row=1, column=0, sticky="w", pady=5)
+        self.geometry_info_label = tk.Label(preview_frame, text="未确定几何类型", fg="gray", font=("Arial", 8))
+        self.geometry_info_label.grid(row=1, column=0, sticky="w", pady=2)
 
-        self.records_info_label = tk.Label(preview_frame, text="没有可导出的数据", fg="gray")
-        self.records_info_label.grid(row=2, column=0, sticky="w", pady=5)
+        self.records_info_label = tk.Label(preview_frame, text="没有可导出的数据", fg="gray", font=("Arial", 8))
+        self.records_info_label.grid(row=2, column=0, sticky="w", pady=2)
 
         # 导出配置区域
-        config_frame = tk.LabelFrame(self, text="导出配置", padx=10, pady=10)
-        config_frame.grid(row=2, column=0, columnspan=3, padx=10, pady=5, sticky="ew")
+        config_frame = tk.LabelFrame(self, text="导出配置", padx=6, pady=6)
+        config_frame.grid(row=2, column=0, columnspan=3, padx=6, pady=3, sticky="ew")
 
         # 输出文件路径
-        tk.Label(config_frame, text="输出文件:").grid(row=0, column=0, sticky="w", pady=5)
+        tk.Label(config_frame, text="输出文件:", font=("Arial", 8)).grid(row=0, column=0, sticky="w", pady=3)
         self.output_path_var = tk.StringVar()
-        self.output_path_entry = tk.Entry(config_frame, textvariable=self.output_path_var, width=60)
-        self.output_path_entry.grid(row=0, column=1, sticky="ew", padx=(10, 5))
+        self.output_path_entry = tk.Entry(config_frame, textvariable=self.output_path_var, width=45)
+        self.output_path_entry.grid(row=0, column=1, sticky="ew", padx=(6, 3))
 
-        browse_button = tk.Button(config_frame, text="浏览...", command=self.browse_output_path)
-        browse_button.grid(row=0, column=2, padx=5)
+        browse_button = tk.Button(config_frame, text="浏览...", command=self.browse_output_path, font=("Arial", 8))
+        browse_button.grid(row=0, column=2, padx=3)
 
         # 坐标系选择
-        tk.Label(config_frame, text="坐标系:").grid(row=1, column=0, sticky="w", pady=5)
+        tk.Label(config_frame, text="坐标系:", font=("Arial", 8)).grid(row=1, column=0, sticky="w", pady=3)
         self.crs_var = tk.StringVar(value="WGS84")
-        self.crs_combobox = ttk.Combobox(config_frame, textvariable=self.crs_var, width=25, state="readonly")
-        self.crs_combobox.grid(row=1, column=1, sticky="w", padx=(10, 0), pady=5)
+        self.crs_combobox = ttk.Combobox(config_frame, textvariable=self.crs_var, width=18, state="readonly")
+        self.crs_combobox.grid(row=1, column=1, sticky="w", padx=(6, 0), pady=3)
 
         # 填充坐标系选项
         crs_options = list(self.exporter.get_supported_crs().keys())
         self.crs_combobox['values'] = crs_options
 
         # 文件编码选择
-        tk.Label(config_frame, text="文件编码:").grid(row=2, column=0, sticky="w", pady=5)
+        tk.Label(config_frame, text="文件编码:", font=("Arial", 8)).grid(row=2, column=0, sticky="w", pady=3)
         self.encoding_var = tk.StringVar(value="utf-8")
         encoding_options = ["utf-8", "gbk", "gb2312", "utf-8-sig"]
-        self.encoding_combobox = ttk.Combobox(config_frame, textvariable=self.encoding_var, width=25, state="readonly")
+        self.encoding_combobox = ttk.Combobox(config_frame, textvariable=self.encoding_var, width=18, state="readonly")
         self.encoding_combobox['values'] = encoding_options
-        self.encoding_combobox.grid(row=1, column=2, sticky="w", padx=(20, 0), pady=5)
+        self.encoding_combobox.grid(row=2, column=1, sticky="w", padx=(6, 0), pady=3)
 
-        # 导出字段选择区域
-        field_selection_frame = tk.LabelFrame(self, text="导出字段选择", padx=10, pady=10)
-        field_selection_frame.grid(row=3, column=0, columnspan=3, padx=10, pady=5, sticky="ew")
+        # 创建字段选择和高级选项的左右分栏布局
+        field_advanced_container = tk.Frame(self)
+        field_advanced_container.grid(row=3, column=0, columnspan=3, padx=8, pady=4, sticky="ew")
+
+        # 左侧：导出字段选择区域
+        field_selection_frame = tk.LabelFrame(field_advanced_container, text="导出字段选择", padx=8, pady=8)
+        field_selection_frame.grid(row=0, column=0, padx=(0, 4), pady=0, sticky="nsew")
 
         # 字段选择标题
-        tk.Label(field_selection_frame, text="选择要导出的字段:", font=("Arial", 10, "bold")).grid(
-            row=0, column=0, sticky="w", pady=(0, 5)
+        tk.Label(field_selection_frame, text="选择要导出的字段:", font=("Arial", 9, "bold")).grid(
+            row=0, column=0, sticky="w", pady=(0, 3)
         )
 
         # 字段选择框架
         field_list_frame = tk.Frame(field_selection_frame)
-        field_list_frame.grid(row=1, column=0, columnspan=3, sticky="ew", pady=5)
+        field_list_frame.grid(row=1, column=0, sticky="ew", pady=3)
+        field_selection_frame.columnconfigure(0, weight=1)
 
         # 创建滚动文本框用于字段选择
-        self.field_list_canvas = tk.Canvas(field_list_frame, height=150)
+        self.field_list_canvas = tk.Canvas(field_list_frame, height=120)
         field_scrollbar = ttk.Scrollbar(field_list_frame, orient="vertical", command=self.field_list_canvas.yview)
         self.field_list_frame_inner = tk.Frame(self.field_list_canvas)
 
@@ -115,39 +120,42 @@ class ExportFrame(tk.Frame):
 
         # 字段选择控制按钮
         field_button_frame = tk.Frame(field_selection_frame)
-        field_button_frame.grid(row=2, column=0, columnspan=3, pady=5)
+        field_button_frame.grid(row=2, column=0, pady=3)
 
         select_all_button = tk.Button(
             field_button_frame,
             text="全选",
             command=self.select_all_fields,
-            width=10
+            width=8,
+            font=("Arial", 8)
         )
-        select_all_button.pack(side="left", padx=5)
+        select_all_button.pack(side="left", padx=3)
 
         deselect_all_button = tk.Button(
             field_button_frame,
             text="全不选",
             command=self.deselect_all_fields,
-            width=10
+            width=8,
+            font=("Arial", 8)
         )
-        deselect_all_button.pack(side="left", padx=5)
+        deselect_all_button.pack(side="left", padx=3)
 
         invert_selection_button = tk.Button(
             field_button_frame,
             text="反选",
             command=self.invert_field_selection,
-            width=10
+            width=8,
+            font=("Arial", 8)
         )
-        invert_selection_button.pack(side="left", padx=5)
+        invert_selection_button.pack(side="left", padx=3)
 
         # 存储字段选择状态
         self.field_vars = {}  # 字段名 -> BooleanVar
         self.field_checkboxes = {}  # 字段名 -> Checkbutton
 
-        # 高级选项（可折叠）
-        self.advanced_frame = tk.LabelFrame(self, text="高级选项", padx=10, pady=10)
-        self.advanced_frame.grid(row=4, column=0, columnspan=3, padx=10, pady=5, sticky="ew")
+        # 右侧：高级选项区域
+        self.advanced_frame = tk.LabelFrame(field_advanced_container, text="高级选项", padx=8, pady=8)
+        self.advanced_frame.grid(row=0, column=1, padx=(4, 0), pady=0, sticky="nsew")
 
         # 是否包含无效记录
         self.include_invalid_var = tk.BooleanVar(value=False)
@@ -155,27 +163,36 @@ class ExportFrame(tk.Frame):
             self.advanced_frame,
             text="包含无效的坐标记录",
             variable=self.include_invalid_var,
-            command=self.update_preview
+            command=self.update_preview,
+            wraplength=180,
+            font=("Arial", 8)
         )
-        self.include_invalid_check.grid(row=0, column=0, sticky="w", pady=5)
+        self.include_invalid_check.grid(row=0, column=0, sticky="w", pady=(3, 8))
 
         # 几何类型覆盖
-        tk.Label(self.advanced_frame, text="强制几何类型:").grid(row=1, column=0, sticky="w", pady=5)
+        tk.Label(self.advanced_frame, text="强制几何类型:", font=("Arial", 9, "bold")).grid(
+            row=1, column=0, sticky="w", pady=(3, 3)
+        )
         self.force_geometry_var = tk.StringVar(value="auto")
         force_geometry_options = ["自动检测", "Point", "LineString", "Polygon"]
         force_geometry_values = ["auto", "Point", "LineString", "Polygon"]
         self.force_geometry_combobox = ttk.Combobox(
             self.advanced_frame,
             textvariable=self.force_geometry_var,
-            width=20,
+            width=16,
             state="readonly"
         )
         self.force_geometry_combobox['values'] = force_geometry_options
-        self.force_geometry_combobox.grid(row=1, column=1, sticky="w", padx=(10, 0), pady=5)
+        self.force_geometry_combobox.grid(row=2, column=0, sticky="w", pady=(0, 8))
+
+        # 配置左右分栏的权重
+        field_advanced_container.columnconfigure(0, weight=3)  # 左侧字段选择区域占更多空间
+        field_advanced_container.columnconfigure(1, weight=1)  # 右侧高级选项区域占较少空间
+        field_advanced_container.rowconfigure(0, weight=1)
 
         # 按钮区域
         button_frame = tk.Frame(self)
-        button_frame.grid(row=4, column=0, columnspan=3, pady=20)
+        button_frame.grid(row=4, column=0, columnspan=3, pady=12)
 
         # 预览导出按钮
         preview_button = tk.Button(
@@ -184,9 +201,10 @@ class ExportFrame(tk.Frame):
             command=self.preview_export,
             bg="#2196F3",
             fg="white",
-            padx=15
+            padx=12,
+            font=("Arial", 9)
         )
-        preview_button.grid(row=0, column=0, padx=10)
+        preview_button.grid(row=0, column=0, padx=6)
 
         # 执行导出按钮
         self.export_button = tk.Button(
@@ -195,11 +213,11 @@ class ExportFrame(tk.Frame):
             command=self.execute_export,
             bg="#4CAF50",
             fg="white",
-            padx=20,
-            font=("Arial", 11, "bold"),
+            padx=16,
+            font=("Arial", 10, "bold"),
             state=tk.DISABLED
         )
-        self.export_button.grid(row=0, column=1, padx=10)
+        self.export_button.grid(row=0, column=1, padx=6)
 
         # 打开输出目录按钮
         self.open_folder_button = tk.Button(
@@ -208,30 +226,31 @@ class ExportFrame(tk.Frame):
             command=self.open_output_folder,
             bg="#FF9800",
             fg="white",
-            padx=15,
+            padx=12,
+            font=("Arial", 9),
             state=tk.DISABLED
         )
-        self.open_folder_button.grid(row=0, column=2, padx=10)
+        self.open_folder_button.grid(row=0, column=2, padx=6)
 
         # 进度条
         self.progress_frame = tk.Frame(self)
-        self.progress_frame.grid(row=5, column=0, columnspan=3, sticky="ew", padx=10, pady=5)
+        self.progress_frame.grid(row=5, column=0, columnspan=3, sticky="ew", padx=8, pady=4)
 
         self.progress_var = tk.DoubleVar()
         self.progress_bar = ttk.Progressbar(
             self.progress_frame,
             variable=self.progress_var,
             maximum=100,
-            length=400
+            length=350
         )
         self.progress_bar.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        self.progress_label = tk.Label(self.progress_frame, text="准备就绪", fg="gray")
-        self.progress_label.pack(side=tk.LEFT, padx=(10, 0))
+        self.progress_label = tk.Label(self.progress_frame, text="准备就绪", fg="gray", font=("Arial", 8))
+        self.progress_label.pack(side=tk.LEFT, padx=(8, 0))
 
         # 状态栏
-        self.status_label = tk.Label(self, text="请先完成前面的配置步骤", fg="gray", anchor="w")
-        self.status_label.grid(row=6, column=0, columnspan=3, sticky="ew", padx=10, pady=5)
+        self.status_label = tk.Label(self, text="请先完成前面的配置步骤", fg="gray", anchor="w", font=("Arial", 8))
+        self.status_label.grid(row=6, column=0, columnspan=3, sticky="ew", padx=8, pady=4)
 
         # 配置权重
         config_frame.columnconfigure(1, weight=1)

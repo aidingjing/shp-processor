@@ -36,25 +36,25 @@ class QueryFrame(tk.Frame):
     def create_widgets(self):
         """创建界面组件"""
         # 标题
-        title_label = tk.Label(self, text="SQL查询", font=("Arial", 14, "bold"))
-        title_label.grid(row=0, column=0, columnspan=2, pady=(10, 20))
+        title_label = tk.Label(self, text="SQL查询", font=("Arial", 12, "bold"))
+        title_label.grid(row=0, column=0, columnspan=2, pady=(8, 12))
 
         # 查询编辑区域
-        query_frame = tk.LabelFrame(self, text="SQL查询语句", padx=5, pady=5)
-        query_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=5, sticky="nsew")
+        query_frame = tk.LabelFrame(self, text="SQL查询语句", padx=4, pady=4)
+        query_frame.grid(row=1, column=0, columnspan=2, padx=8, pady=4, sticky="nsew")
 
         self.query_text = scrolledtext.ScrolledText(
             query_frame,
-            width=80,
-            height=15,
-            font=("Consolas", 11),
+            width=70,
+            height=12,
+            font=("Consolas", 10),
             wrap=tk.NONE
         )
-        self.query_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.query_text.pack(fill=tk.BOTH, expand=True, padx=4, pady=4)
 
         # 按钮区域
         button_frame = tk.Frame(self)
-        button_frame.grid(row=2, column=0, columnspan=2, pady=10)
+        button_frame.grid(row=2, column=0, columnspan=2, pady=8)
 
         # 执行查询按钮
         self.execute_button = tk.Button(
@@ -63,10 +63,10 @@ class QueryFrame(tk.Frame):
             command=self.execute_query,
             bg="#4CAF50",
             fg="white",
-            padx=20,
-            font=("Arial", 10, "bold")
+            padx=12,
+            font=("Arial", 9, "bold")
         )
-        self.execute_button.grid(row=0, column=0, padx=5)
+        self.execute_button.grid(row=0, column=0, padx=3)
 
         # 验证语法按钮
         validate_button = tk.Button(
@@ -75,9 +75,10 @@ class QueryFrame(tk.Frame):
             command=self.validate_syntax,
             bg="#2196F3",
             fg="white",
-            padx=15
+            padx=10,
+            font=("Arial", 9)
         )
-        validate_button.grid(row=0, column=1, padx=5)
+        validate_button.grid(row=0, column=1, padx=3)
 
         # 清空按钮
         clear_button = tk.Button(
@@ -86,9 +87,10 @@ class QueryFrame(tk.Frame):
             command=self.clear_query,
             bg="#FF9800",
             fg="white",
-            padx=15
+            padx=10,
+            font=("Arial", 9)
         )
-        clear_button.grid(row=0, column=2, padx=5)
+        clear_button.grid(row=0, column=2, padx=3)
 
         # 示例查询按钮
         example_button = tk.Button(
@@ -97,17 +99,18 @@ class QueryFrame(tk.Frame):
             command=self.load_example_query,
             bg="#9C27B0",
             fg="white",
-            padx=15
+            padx=10,
+            font=("Arial", 9)
         )
-        example_button.grid(row=0, column=3, padx=5)
+        example_button.grid(row=0, column=3, padx=3)
 
         # 结果区域
-        result_frame = tk.LabelFrame(self, text="查询结果", padx=5, pady=5)
-        result_frame.grid(row=3, column=0, columnspan=2, padx=10, pady=5, sticky="nsew")
+        result_frame = tk.LabelFrame(self, text="查询结果", padx=4, pady=4)
+        result_frame.grid(row=3, column=0, columnspan=2, padx=8, pady=4, sticky="nsew")
 
         # 创建Treeview来显示结果
         self.result_tree = ttk.Treeview(result_frame)
-        self.result_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.result_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=4, pady=4)
 
         # 滚动条
         v_scrollbar = ttk.Scrollbar(result_frame, orient=tk.VERTICAL, command=self.result_tree.yview)
@@ -115,17 +118,17 @@ class QueryFrame(tk.Frame):
         self.result_tree.configure(yscrollcommand=v_scrollbar.set)
 
         h_scrollbar = ttk.Scrollbar(self, orient=tk.HORIZONTAL, command=self.result_tree.xview)
-        h_scrollbar.grid(row=4, column=0, columnspan=2, sticky="ew", padx=10, pady=(0, 5))
+        h_scrollbar.grid(row=4, column=0, columnspan=2, sticky="ew", padx=8, pady=(0, 4))
         self.result_tree.configure(xscrollcommand=h_scrollbar.set)
 
         # 状态栏
         status_frame = tk.Frame(self)
-        status_frame.grid(row=5, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
+        status_frame.grid(row=5, column=0, columnspan=2, sticky="ew", padx=8, pady=4)
 
-        self.status_label = tk.Label(status_frame, text="准备就绪", fg="green", anchor="w")
+        self.status_label = tk.Label(status_frame, text="准备就绪", fg="green", anchor="w", font=("Arial", 9))
         self.status_label.pack(side=tk.LEFT)
 
-        self.record_count_label = tk.Label(status_frame, text="", anchor="e")
+        self.record_count_label = tk.Label(status_frame, text="", anchor="e", font=("Arial", 9))
         self.record_count_label.pack(side=tk.RIGHT)
 
         # 配置权重

@@ -35,32 +35,32 @@ class FieldSelectionFrame(tk.Frame):
     def create_widgets(self):
         """创建界面组件"""
         # 标题
-        title_label = tk.Label(self, text="空间坐标字段选择", font=("Arial", 14, "bold"))
-        title_label.grid(row=0, column=0, columnspan=3, pady=(10, 20))
+        title_label = tk.Label(self, text="空间坐标字段选择", font=("Arial", 12, "bold"))
+        title_label.grid(row=0, column=0, columnspan=3, pady=(8, 12))
 
         # 字段选择区域
-        field_frame = tk.LabelFrame(self, text="选择坐标字段", padx=10, pady=10)
-        field_frame.grid(row=1, column=0, columnspan=3, padx=10, pady=5, sticky="ew")
+        field_frame = tk.LabelFrame(self, text="选择坐标字段", padx=8, pady=8)
+        field_frame.grid(row=1, column=0, columnspan=3, padx=8, pady=4, sticky="ew")
 
-        tk.Label(field_frame, text="坐标字段:").grid(row=0, column=0, sticky="w", padx=(0, 10))
+        tk.Label(field_frame, text="坐标字段:").grid(row=0, column=0, sticky="w", padx=(0, 8))
 
-        self.field_combobox = ttk.Combobox(field_frame, width=40, state="readonly")
-        self.field_combobox.grid(row=0, column=1, sticky="ew", padx=(0, 10))
+        self.field_combobox = ttk.Combobox(field_frame, width=35, state="readonly")
+        self.field_combobox.grid(row=0, column=1, sticky="ew", padx=(0, 8))
         self.field_combobox.bind("<<ComboboxSelected>>", self.on_field_selection_changed)
 
         # 分析按钮
         analyze_button = tk.Button(field_frame, text="分析字段", command=self.analyze_selected_field,
-                                 bg="#2196F3", fg="white", padx=15)
+                                 bg="#2196F3", fg="white", padx=12, font=("Arial", 9))
         analyze_button.grid(row=0, column=2)
 
         # 预览区域
-        preview_frame = tk.LabelFrame(self, text="字段预览", padx=10, pady=10)
-        preview_frame.grid(row=2, column=0, columnspan=3, padx=10, pady=5, sticky="nsew")
+        preview_frame = tk.LabelFrame(self, text="字段预览", padx=8, pady=8)
+        preview_frame.grid(row=2, column=0, columnspan=3, padx=8, pady=4, sticky="nsew")
 
         # 字段值预览
-        tk.Label(preview_frame, text="字段值示例:").grid(row=0, column=0, sticky="w", pady=(0, 5))
+        tk.Label(preview_frame, text="字段值示例:", font=("Arial", 9)).grid(row=0, column=0, sticky="w", pady=(0, 4))
 
-        self.preview_text = tk.Text(preview_frame, width=80, height=8, wrap=tk.WORD)
+        self.preview_text = tk.Text(preview_frame, width=70, height=6, wrap=tk.WORD, font=("Arial", 9))
         self.preview_text.grid(row=1, column=0, sticky="ew")
 
         preview_scrollbar = ttk.Scrollbar(preview_frame, orient=tk.VERTICAL, command=self.preview_text.yview)
@@ -68,8 +68,8 @@ class FieldSelectionFrame(tk.Frame):
         self.preview_text.configure(yscrollcommand=preview_scrollbar.set)
 
         # 分析结果区域
-        analysis_frame = tk.LabelFrame(self, text="字段分析结果", padx=10, pady=10)
-        analysis_frame.grid(row=3, column=0, columnspan=3, padx=10, pady=5, sticky="ew")
+        analysis_frame = tk.LabelFrame(self, text="字段分析结果", padx=8, pady=8)
+        analysis_frame.grid(row=3, column=0, columnspan=3, padx=8, pady=4, sticky="ew")
 
         # 创建分析结果显示的标签
         self.analysis_labels = {}
@@ -88,17 +88,17 @@ class FieldSelectionFrame(tk.Frame):
             row = i // 2
             col = (i % 2) * 2
 
-            tk.Label(analysis_frame, text=label_text, font=("Arial", 10, "bold")).grid(
+            tk.Label(analysis_frame, text=label_text, font=("Arial", 9, "bold")).grid(
                 row=row, column=col, sticky="w", padx=(0, 5), pady=2
             )
-            self.analysis_labels[key] = tk.Label(analysis_frame, text="--", fg="blue")
-            self.analysis_labels[key].grid(row=row, column=col + 1, sticky="w", padx=(0, 20), pady=2)
+            self.analysis_labels[key] = tk.Label(analysis_frame, text="--", fg="blue", font=("Arial", 9))
+            self.analysis_labels[key].grid(row=row, column=col + 1, sticky="w", padx=(0, 15), pady=2)
 
         # 几何类型选择区域
-        geometry_frame = tk.LabelFrame(self, text="几何类型设置", padx=10, pady=10)
-        geometry_frame.grid(row=4, column=0, columnspan=3, padx=10, pady=5, sticky="ew")
+        geometry_frame = tk.LabelFrame(self, text="几何类型设置", padx=8, pady=8)
+        geometry_frame.grid(row=4, column=0, columnspan=3, padx=8, pady=4, sticky="ew")
 
-        tk.Label(geometry_frame, text="指定几何类型:").grid(row=0, column=0, sticky="w", padx=(0, 10))
+        tk.Label(geometry_frame, text="指定几何类型:", font=("Arial", 9)).grid(row=0, column=0, sticky="w", padx=(0, 8))
 
         self.geometry_var = tk.StringVar(value="auto")
         geometry_types = ["自动检测", "Point (点)", "LineString (线)", "Polygon (面)"]
@@ -110,12 +110,13 @@ class FieldSelectionFrame(tk.Frame):
                 text=text,
                 variable=self.geometry_var,
                 value=value,
-                command=self.on_geometry_type_changed
-            ).grid(row=0, column=i + 1, sticky="w", padx=5)
+                command=self.on_geometry_type_changed,
+                font=("Arial", 9)
+            ).grid(row=0, column=i + 1, sticky="w", padx=4)
 
         # 按钮区域
         button_frame = tk.Frame(self)
-        button_frame.grid(row=5, column=0, columnspan=3, pady=20)
+        button_frame.grid(row=5, column=0, columnspan=3, pady=15)
 
         # 确认选择按钮
         self.confirm_button = tk.Button(
@@ -124,11 +125,11 @@ class FieldSelectionFrame(tk.Frame):
             command=self.confirm_selection,
             bg="#4CAF50",
             fg="white",
-            padx=20,
-            font=("Arial", 11, "bold"),
+            padx=15,
+            font=("Arial", 10, "bold"),
             state=tk.DISABLED
         )
-        self.confirm_button.grid(row=0, column=0, padx=10)
+        self.confirm_button.grid(row=0, column=0, padx=8)
 
         # 重新分析按钮
         reanalyze_button = tk.Button(
@@ -137,13 +138,14 @@ class FieldSelectionFrame(tk.Frame):
             command=self.reanalyze_field,
             bg="#FF9800",
             fg="white",
-            padx=15
+            padx=12,
+            font=("Arial", 9)
         )
-        reanalyze_button.grid(row=0, column=1, padx=10)
+        reanalyze_button.grid(row=0, column=1, padx=8)
 
         # 状态栏
-        self.status_label = tk.Label(self, text="请先执行SQL查询获取数据", fg="gray", anchor="w")
-        self.status_label.grid(row=6, column=0, columnspan=3, sticky="ew", padx=10, pady=5)
+        self.status_label = tk.Label(self, text="请先执行SQL查询获取数据", fg="gray", anchor="w", font=("Arial", 9))
+        self.status_label.grid(row=6, column=0, columnspan=3, sticky="ew", padx=8, pady=4)
 
         # 配置权重
         self.rowconfigure(2, weight=1)

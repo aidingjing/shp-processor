@@ -23,9 +23,9 @@ class MainWindow:
     def __init__(self):
         """初始化主窗口"""
         self.root = tk.Tk()
-        self.root.title("SHP文件处理工具 - MySQL数据导出")
-        self.root.geometry("1200x800")
-        self.root.minsize(1000, 600)
+        self.root.title("SHP文件处理工具")
+        self.root.geometry("1000x650")
+        self.root.minsize(900, 550)
 
         # 设置窗口图标（如果有的话）
         try:
@@ -54,7 +54,7 @@ class MainWindow:
         """创建主界面组件"""
         # 创建主框架
         main_frame = tk.Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=8, pady=8)
 
         # 创建左侧步骤导航面板
         self.create_step_panel(main_frame)
@@ -64,15 +64,15 @@ class MainWindow:
 
     def create_step_panel(self, parent):
         """创建步骤导航面板"""
-        step_frame = tk.LabelFrame(parent, text="操作步骤", padx=10, pady=10)
-        step_frame.grid(row=0, column=0, sticky="ns", padx=(0, 10))
+        step_frame = tk.LabelFrame(parent, text="操作步骤", padx=8, pady=8)
+        step_frame.grid(row=0, column=0, sticky="ns", padx=(0, 8))
 
         # 步骤列表
         self.steps = [
-            {"name": "1. 数据库配置", "status": "pending", "panel": "config"},
-            {"name": "2. SQL查询", "status": "pending", "panel": "query"},
-            {"name": "3. 字段选择", "status": "pending", "panel": "field"},
-            {"name": "4. 导出配置", "status": "pending", "panel": "export"}
+            {"name": "1.数据库配置", "status": "pending", "panel": "config"},
+            {"name": "2.SQL查询", "status": "pending", "panel": "query"},
+            {"name": "3.字段选择", "status": "pending", "panel": "field"},
+            {"name": "4.导出配置", "status": "pending", "panel": "export"}
         ]
 
         self.step_labels = []
@@ -81,15 +81,15 @@ class MainWindow:
         for i, step in enumerate(self.steps):
             # 步骤指示器
             indicator_frame = tk.Frame(step_frame)
-            indicator_frame.pack(fill=tk.X, pady=5)
+            indicator_frame.pack(fill=tk.X, pady=3)
 
             # 状态指示圆圈
-            indicator = tk.Canvas(indicator_frame, width=20, height=20, highlightthickness=0)
-            indicator.pack(side=tk.LEFT, padx=(0, 10))
+            indicator = tk.Canvas(indicator_frame, width=18, height=18, highlightthickness=0)
+            indicator.pack(side=tk.LEFT, padx=(0, 8))
             self.draw_step_indicator(indicator, "pending")
 
             # 步骤名称
-            label = tk.Label(indicator_frame, text=step["name"], font=("Arial", 10), anchor="w")
+            label = tk.Label(indicator_frame, text=step["name"], font=("Arial", 9), anchor="w")
             label.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
             # 绑定点击事件
@@ -101,20 +101,20 @@ class MainWindow:
             self.step_labels.append(label)
 
         # 添加间距
-        tk.Frame(step_frame, height=20).pack()
+        tk.Frame(step_frame, height=10).pack()
 
         # 当前步骤信息
-        info_frame = tk.LabelFrame(step_frame, text="当前状态", padx=10, pady=10)
-        info_frame.pack(fill=tk.X, pady=10)
+        info_frame = tk.LabelFrame(step_frame, text="当前状态", padx=8, pady=8)
+        info_frame.pack(fill=tk.X, pady=8)
 
-        self.status_text = tk.Text(info_frame, height=8, width=25, wrap=tk.WORD, state=tk.DISABLED)
+        self.status_text = tk.Text(info_frame, height=6, width=22, wrap=tk.WORD, state=tk.DISABLED, font=("Arial", 8))
         self.status_text.pack()
 
         # 操作提示
-        tip_frame = tk.LabelFrame(step_frame, text="操作提示", padx=10, pady=10)
-        tip_frame.pack(fill=tk.X, pady=10)
+        tip_frame = tk.LabelFrame(step_frame, text="操作提示", padx=8, pady=8)
+        tip_frame.pack(fill=tk.X, pady=8)
 
-        self.tip_label = tk.Label(tip_frame, text="请先配置数据库连接", wraplength=200, justify=tk.LEFT)
+        self.tip_label = tk.Label(tip_frame, text="请先配置数据库连接", wraplength=180, justify=tk.LEFT, font=("Arial", 8))
         self.tip_label.pack()
 
     def draw_step_indicator(self, canvas, status):

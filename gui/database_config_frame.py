@@ -34,82 +34,82 @@ class DatabaseConfigFrame(tk.Frame):
     def create_widgets(self):
         """创建界面组件"""
         # 标题
-        title_label = tk.Label(self, text="MySQL数据库配置", font=("Arial", 14, "bold"))
-        title_label.grid(row=0, column=0, columnspan=3, pady=(10, 20))
+        title_label = tk.Label(self, text="MySQL数据库配置", font=("Arial", 12, "bold"))
+        title_label.grid(row=0, column=0, columnspan=3, pady=(8, 15))
 
         # 配置字段
         self.fields = {}
 
         # 主机地址
-        tk.Label(self, text="主机地址:").grid(row=1, column=0, sticky="e", padx=(20, 5), pady=5)
-        self.fields['host'] = tk.Entry(self, width=30)
-        self.fields['host'].grid(row=1, column=1, padx=(0, 20), pady=5, sticky="ew")
+        tk.Label(self, text="主机地址:").grid(row=1, column=0, sticky="e", padx=(15, 5), pady=4)
+        self.fields['host'] = tk.Entry(self, width=25)
+        self.fields['host'].grid(row=1, column=1, padx=(0, 15), pady=4, sticky="ew")
 
         # 端口号
-        tk.Label(self, text="端口号:").grid(row=2, column=0, sticky="e", padx=(20, 5), pady=5)
-        self.fields['port'] = tk.Entry(self, width=30)
-        self.fields['port'].grid(row=2, column=1, padx=(0, 20), pady=5, sticky="ew")
+        tk.Label(self, text="端口号:").grid(row=2, column=0, sticky="e", padx=(15, 5), pady=4)
+        self.fields['port'] = tk.Entry(self, width=25)
+        self.fields['port'].grid(row=2, column=1, padx=(0, 15), pady=4, sticky="ew")
         self.fields['port'].insert(0, "3306")
 
         # 用户名
-        tk.Label(self, text="用户名:").grid(row=3, column=0, sticky="e", padx=(20, 5), pady=5)
-        self.fields['user'] = tk.Entry(self, width=30)
-        self.fields['user'].grid(row=3, column=1, padx=(0, 20), pady=5, sticky="ew")
+        tk.Label(self, text="用户名:").grid(row=3, column=0, sticky="e", padx=(15, 5), pady=4)
+        self.fields['user'] = tk.Entry(self, width=25)
+        self.fields['user'].grid(row=3, column=1, padx=(0, 15), pady=4, sticky="ew")
 
         # 密码
-        tk.Label(self, text="密码:").grid(row=4, column=0, sticky="e", padx=(20, 5), pady=5)
-        self.fields['password'] = tk.Entry(self, width=30, show="*")
-        self.fields['password'].grid(row=4, column=1, padx=(0, 20), pady=5, sticky="ew")
+        tk.Label(self, text="密码:").grid(row=4, column=0, sticky="e", padx=(15, 5), pady=4)
+        self.fields['password'] = tk.Entry(self, width=25, show="*")
+        self.fields['password'].grid(row=4, column=1, padx=(0, 15), pady=4, sticky="ew")
 
         # 数据库名
-        tk.Label(self, text="数据库名:").grid(row=5, column=0, sticky="e", padx=(20, 5), pady=5)
-        self.fields['database'] = tk.Entry(self, width=30)
-        self.fields['database'].grid(row=5, column=1, padx=(0, 20), pady=5, sticky="ew")
+        tk.Label(self, text="数据库名:").grid(row=5, column=0, sticky="e", padx=(15, 5), pady=4)
+        self.fields['database'] = tk.Entry(self, width=25)
+        self.fields['database'].grid(row=5, column=1, padx=(0, 15), pady=4, sticky="ew")
 
         # 字符集
-        tk.Label(self, text="字符集:").grid(row=6, column=0, sticky="e", padx=(20, 5), pady=5)
-        self.fields['charset'] = ttk.Combobox(self, width=27, values=["utf8mb4", "utf8", "latin1"])
-        self.fields['charset'].grid(row=6, column=1, padx=(0, 20), pady=5, sticky="ew")
+        tk.Label(self, text="字符集:").grid(row=6, column=0, sticky="e", padx=(15, 5), pady=4)
+        self.fields['charset'] = ttk.Combobox(self, width=22, values=["utf8mb4", "utf8", "latin1"])
+        self.fields['charset'].grid(row=6, column=1, padx=(0, 15), pady=4, sticky="ew")
         self.fields['charset'].set("utf8mb4")
 
         # 按钮区域
         button_frame = tk.Frame(self)
-        button_frame.grid(row=7, column=0, columnspan=3, pady=20)
+        button_frame.grid(row=7, column=0, columnspan=3, pady=15)
 
         # 测试连接按钮
         self.test_button = tk.Button(button_frame, text="测试连接", command=self.test_connection,
-                                   bg="#4CAF50", fg="white", padx=20)
-        self.test_button.grid(row=0, column=0, padx=5)
+                                   bg="#4CAF50", fg="white", padx=15, font=("Arial", 9))
+        self.test_button.grid(row=0, column=0, padx=3)
 
         # 保存配置按钮
         save_button = tk.Button(button_frame, text="保存配置", command=self.save_config,
-                              bg="#2196F3", fg="white", padx=20)
-        save_button.grid(row=0, column=1, padx=5)
+                              bg="#2196F3", fg="white", padx=15, font=("Arial", 9))
+        save_button.grid(row=0, column=1, padx=3)
 
         # 加载配置按钮
         load_button = tk.Button(button_frame, text="加载配置", command=self.load_config,
-                              bg="#FF9800", fg="white", padx=20)
-        load_button.grid(row=0, column=2, padx=5)
+                              bg="#FF9800", fg="white", padx=15, font=("Arial", 9))
+        load_button.grid(row=0, column=2, padx=3)
 
         # 重置按钮
         reset_button = tk.Button(button_frame, text="重置", command=self.reset_config,
-                               bg="#F44336", fg="white", padx=20)
-        reset_button.grid(row=0, column=3, padx=5)
+                               bg="#F44336", fg="white", padx=15, font=("Arial", 9))
+        reset_button.grid(row=0, column=3, padx=3)
 
         # 状态显示区域
         status_frame = tk.Frame(self)
-        status_frame.grid(row=8, column=0, columnspan=3, pady=10, sticky="ew")
+        status_frame.grid(row=8, column=0, columnspan=3, pady=8, sticky="ew")
 
-        tk.Label(status_frame, text="状态:").grid(row=0, column=0, sticky="w", padx=(20, 5))
-        self.status_label = tk.Label(status_frame, text="未配置", fg="gray")
+        tk.Label(status_frame, text="状态:", font=("Arial", 9)).grid(row=0, column=0, sticky="w", padx=(15, 5))
+        self.status_label = tk.Label(status_frame, text="未配置", fg="gray", font=("Arial", 9))
         self.status_label.grid(row=0, column=1, sticky="w")
 
         # 连接信息显示
         info_frame = tk.Frame(self)
         info_frame.grid(row=9, column=0, columnspan=3, pady=5, sticky="ew")
 
-        tk.Label(info_frame, text="连接信息:").grid(row=0, column=0, sticky="w", padx=(20, 5))
-        self.info_label = tk.Label(info_frame, text="mysql://", fg="blue")
+        tk.Label(info_frame, text="连接信息:", font=("Arial", 9)).grid(row=0, column=0, sticky="w", padx=(15, 5))
+        self.info_label = tk.Label(info_frame, text="mysql://", fg="blue", font=("Arial", 8))
         self.info_label.grid(row=0, column=1, sticky="w")
 
         # 配置列权重
