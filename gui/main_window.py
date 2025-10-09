@@ -15,6 +15,12 @@ from gui.field_selection_frame import FieldSelectionFrame
 from gui.export_frame import ExportFrame
 from gui.shapefile_merger_dialog import ShapefileMergerDialog
 from gui.spatial_analysis_dialog import SpatialAnalysisDialog
+from gui.coordinate_converter_dialog import CoordinateConverterDialog
+from gui.shp_viewer_dialog import ShpViewerDialog
+from gui.geometry_repair_dialog import GeometryRepairDialog
+from gui.sql_query_builder_dialog import SQLQueryBuilderDialog
+from gui.data_visualization_dialog import DataVisualizationDialog
+from gui.spatial_statistics_dialog import SpatialStatisticsDialog
 
 
 class MainWindow:
@@ -183,11 +189,26 @@ class MainWindow:
         # 工具菜单
         tools_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="工具", menu=tools_menu)
-        tools_menu.add_command(label="SHP文件合并工具", command=self.show_shp_merger)
-        tools_menu.add_command(label="空间统计分析", command=self.show_spatial_analysis)
-        tools_menu.add_separator()
-        tools_menu.add_command(label="坐标转换工具", command=self.show_coordinate_converter)
-        tools_menu.add_command(label="SHP文件查看器", command=self.show_shp_viewer)
+        
+        # 数据分析工具子菜单
+        analysis_menu = tk.Menu(tools_menu, tearoff=0)
+        tools_menu.add_cascade(label="数据分析工具", menu=analysis_menu)
+        analysis_menu.add_command(label="SQL查询构建器", command=self.show_sql_query_builder)
+        analysis_menu.add_command(label="数据可视化工具", command=self.show_data_visualization)
+        analysis_menu.add_command(label="空间统计分析工具", command=self.show_spatial_statistics)
+        
+        # 数据处理工具子菜单
+        processing_menu = tk.Menu(tools_menu, tearoff=0)
+        tools_menu.add_cascade(label="数据处理工具", menu=processing_menu)
+        processing_menu.add_command(label="几何数据修复工具", command=self.show_geometry_repair)
+        processing_menu.add_command(label="SHP文件合并工具", command=self.show_shp_merger)
+        processing_menu.add_command(label="空间统计分析", command=self.show_spatial_analysis)
+        
+        # 实用工具子菜单
+        utility_menu = tk.Menu(tools_menu, tearoff=0)
+        tools_menu.add_cascade(label="实用工具", menu=utility_menu)
+        utility_menu.add_command(label="坐标转换工具", command=self.show_coordinate_converter)
+        utility_menu.add_command(label="SHP文件查看器", command=self.show_shp_viewer)
 
         # 帮助菜单
         help_menu = tk.Menu(menubar, tearoff=0)
@@ -421,11 +442,19 @@ class MainWindow:
 
     def show_coordinate_converter(self):
         """显示坐标转换工具"""
-        messagebox.showinfo("功能开发中", "坐标转换工具正在开发中...")
+        try:
+            converter_dialog = CoordinateConverterDialog(self.root)
+            self.root.wait_window(converter_dialog.window)
+        except Exception as e:
+            messagebox.showerror("错误", f"打开坐标转换工具失败：\n{e}")
 
     def show_shp_viewer(self):
         """显示SHP文件查看器"""
-        messagebox.showinfo("功能开发中", "SHP文件查看器正在开发中...")
+        try:
+            viewer_dialog = ShpViewerDialog(self.root)
+            self.root.wait_window(viewer_dialog.window)
+        except Exception as e:
+            messagebox.showerror("错误", f"打开SHP文件查看器失败：\n{e}")
 
     def show_shp_merger(self):
         """显示SHP文件合并工具"""
@@ -442,6 +471,44 @@ class MainWindow:
             self.root.wait_window(analysis_dialog.window)
         except Exception as e:
             messagebox.showerror("错误", f"打开空间统计分析工具失败：\n{e}")
+
+    def show_sql_query_builder(self):
+        """显示SQL查询构建器"""
+        try:
+            query_builder_dialog = SQLQueryBuilderDialog(self.root, self.config)
+            self.root.wait_window(query_builder_dialog.window)
+        except Exception as e:
+            messagebox.showerror("错误", f"打开SQL查询构建器失败：\n{e}")
+
+    def show_data_visualization(self):
+        """显示数据可视化工具"""
+        try:
+            # 传递当前数据给可视化工具
+            visualization_dialog = DataVisualizationDialog(self.root, self.current_dataframe)
+            self.root.wait_window(visualization_dialog.window)
+        except Exception as e:
+            messagebox.showerror("错误", f"打开数据可视化工具失败：\n{e}")
+
+    def show_spatial_statistics(self):
+        """显示空间统计分析工具"""
+        try:
+            # 如果有GeoDataFrame则传递，否则传递None
+            gdf = None
+            if hasattr(self, 'current_gdf'):
+                gdf = self.current_gdf
+            
+            statistics_dialog = SpatialStatisticsDialog(self.root, gdf)
+            self.root.wait_window(statistics_dialog.window)
+        except Exception as e:
+            messagebox.showerror("错误", f"打开空间统计分析工具失败：\n{e}")
+
+    def show_geometry_repair(self):
+        """显示几何数据修复工具"""
+        try:
+            repair_dialog = GeometryRepairDialog(self.root)
+            self.root.wait_window(repair_dialog.window)
+        except Exception as e:
+            messagebox.showerror("错误", f"打开几何数据修复工具失败：\n{e}")
 
     def show_help(self):
         """显示帮助信息"""
