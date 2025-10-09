@@ -344,6 +344,285 @@ class GeometryUtils:
 
         return stats
 
+    @staticmethod
+    def calculate_line_polygon_intersection_ratio(line: LineString, polygon: Polygon) -> float:
+        """
+        计算线段与多边形的交集比例
+
+        Args:
+            line: 线段对象
+            polygon: 多边形对象
+
+        Returns:
+            float: 交集比例（0.0 - 1.0）
+        """
+        try:
+            # 计算线段与多边形的交集
+            intersection = line.intersection(polygon)
+
+            if intersection.is_empty:
+                return 0.0
+
+            # 如果交集是线段，计算长度比例
+            if hasattr(intersection, 'length') and intersection.length > 0:
+                return intersection.length / line.length
+
+            # 如果线段完全包含在多边形内
+            if polygon.contains(line):
+                return 1.0
+
+            # 如果线段与多边形有接触但无长度交集
+            if not intersection.is_empty:
+                return 0.01  # 给一个很小的值表示有接触
+
+            return 0.0
+
+        except Exception:
+            return 0.0
+
+    @staticmethod
+    def calculate_polygon_overlap_ratio(polygon1: Polygon, polygon2: Polygon) -> float:
+        """
+        计算两个多边形的重叠面积比例
+
+        Args:
+            polygon1: 第一个多边形（参考多边形）
+            polygon2: 第二个多边形
+
+        Returns:
+            float: 重叠面积比例（0.0 - 1.0）
+        """
+        try:
+            # 计算交集面积
+            intersection = polygon1.intersection(polygon2)
+
+            if intersection.is_empty or not hasattr(intersection, 'area'):
+                return 0.0
+
+            # 计算重叠比例（交集面积 / 第一个多边形的面积）
+            if polygon1.area > 0:
+                return intersection.area / polygon1.area
+
+            return 0.0
+
+        except Exception:
+            return 0.0
+
+    @staticmethod
+    def find_best_fit_polygon(geometry: Union[Point, LineString, Polygon],
+                            candidate_polygons: List[Polygon],
+                            polygon_ids: List[int] = None) -> Tuple[Optional[int], float]:
+        """
+        为几何对象找到最佳匹配的多边形
+
+        Args:
+            geometry: 几何对象（点、线或面）
+            candidate_polygons: 候选多边形列表
+            polygon_ids: 对应的多边形ID列表（可选）
+
+        Returns:
+            Tuple: (最佳匹配多边形ID, 匹配度)
+        """
+        if not candidate_polygons:
+            return None, 0.0
+
+        best_match_id = None
+        best_score = 0.0
+
+        if polygon_ids is None:
+            polygon_ids = list(range(len(candidate_polygons)))
+
+        # 处理点要素
+        if isinstance(geometry, Point):
+            for i, polygon in enumerate(candidate_polygons):
+                if polygon.contains(geometry) or polygon.touches(geometry):
+                    return polygon_ids[i], 1.0
+
+        # 处理线要素
+        elif isinstance(geometry, LineString):
+            best_ratio = 0.0
+            for i, polygon in enumerate(candidate_polygons):
+                ratio = GeometryUtils.calculate_line_polygon_intersection_ratio(geometry, polygon)
+                if ratio > best_ratio:
+                    best_ratio = ratio
+                    best_match_id = polygon_ids[i]
+            return best_match_id, best_ratio
+
+        # 处理面要素
+        elif isinstance(geometry, Polygon):
+            best_ratio = 0.0
+            for i, polygon in enumerate(candidate_polygons):
+                ratio = GeometryUtils.calculate_polygon_overlap_ratio(geometry, polygon)
+                if ratio > best_ratio:
+                    best_ratio = ratio
+                    best_match_id = polygon_ids[i]
+            return best_match_id, best_ratio
+
+        return None, 0.0
+
+    @staticmethod
+    def calculate_spatial_relationship_stats(geometry1: Union[Point, LineString, Polygon],
+                                           geometry2: Union[Point, LineString, Polygon]) -> Dict[str, Any]:
+        """
+        计算两个几何对象之间的空间关系统计
+
+        Args:
+            geometry1: 第一个几何对象
+            geometry2: 第二个几何对象
+
+        Returns:
+            Dict: 空间关系统计信息
+        """
+        stats = {
+            "contains": False,
+            "within": False,
+            "intersects": False,
+            "touches": False,
+            "crosses": False,
+            "overlaps": False,
+            "intersection_ratio": 0.0,
+            "distance": 0.0
+        }
+
+        try:
+            # 基本空间关系
+            stats["contains"] = geometry1.contains(geometry2)
+            stats["within"] = geometry1.within(geometry2)
+            stats["intersects"] = geometry1.intersects(geometry2)
+            stats["touches"] = geometry1.touches(geometry2)
+            stats["crosses"] = geometry1.crosses(geometry2)
+            stats["overlaps"] = geometry1.overlaps(geometry2)
+
+            # 计算距离
+            if not stats["intersects"]:
+                stats["distance"] = geometry1.distance(geometry2)
+            else:
+                stats["distance"] = 0.0
+
+            # 计算交集比例
+            intersection = geometry1.intersection(geometry2)
+            if not intersection.is_empty:
+                if isinstance(geometry1, Point):
+                    stats["intersection_ratio"] = 1.0 if stats["contains"] or stats["within"] else 0.0
+                elif isinstance(geometry1, LineString):
+                    stats["intersection_ratio"] = GeometryUtils.calculate_line_polygon_intersection_ratio(
+                        geometry1, geometry2) if isinstance(geometry2, Polygon) else 0.0
+                elif isinstance(geometry1, Polygon):
+                    if isinstance(geometry2, Polygon):
+                        stats["intersection_ratio"] = GeometryUtils.calculate_polygon_overlap_ratio(
+                            geometry1, geometry2)
+                    elif isinstance(geometry2, LineString):
+                        stats["intersection_ratio"] = GeometryUtils.calculate_line_polygon_intersection_ratio(
+                            geometry2, geometry1)
+
+        except Exception as e:
+            stats["error"] = str(e)
+
+        return stats
+
+    @staticmethod
+    def create_buffer_for_spatial_analysis(geometry: Union[Point, LineString, Polygon],
+                                         buffer_distance: float) -> Union[Point, LineString, Polygon]:
+        """
+        为空间分析创建缓冲区
+
+        Args:
+            geometry: 几何对象
+            buffer_distance: 缓冲距离（米）
+
+        Returns:
+            Union: 缓冲区几何对象
+        """
+        try:
+            # 将米转换为度数（粗略转换，在赤道附近）
+            distance_degrees = buffer_distance / 111320.0  # 1度 ≈ 111320米
+
+            # 对于点要素，创建圆形缓冲区
+            if isinstance(geometry, Point):
+                return geometry.buffer(distance_degrees)
+
+            # 对于线要素，创建线缓冲区
+            elif isinstance(geometry, LineString):
+                return geometry.buffer(distance_degrees)
+
+            # 对于面要素，创建面缓冲区
+            elif isinstance(geometry, Polygon):
+                return geometry.buffer(distance_degrees)
+
+            return geometry
+
+        except Exception:
+            return geometry
+
+    @staticmethod
+    def validate_spatial_analysis_inputs(polygons_gdf: gpd.GeoDataFrame,
+                                       target_gdf: gpd.GeoDataFrame) -> Dict[str, Any]:
+        """
+        验证空间分析的输入数据
+
+        Args:
+            polygons_gdf: 面图层数据
+            target_gdf: 目标图层数据
+
+        Returns:
+            Dict: 验证结果
+        """
+        validation_result = {
+            "valid": True,
+            "errors": [],
+            "warnings": [],
+            "info": {}
+        }
+
+        try:
+            # 检查面图层
+            if polygons_gdf is None or polygons_gdf.empty:
+                validation_result["valid"] = False
+                validation_result["errors"].append("面图层为空")
+                return validation_result
+
+            # 检查面图层几何类型
+            polygon_geom_types = polygons_gdf.geometry.geom_type.unique()
+            valid_polygon_types = ['Polygon', 'MultiPolygon']
+            if not any(geom_type in polygon_geom_types for geom_type in valid_polygon_types):
+                validation_result["valid"] = False
+                validation_result["errors"].append("面图层不包含有效的面几何类型")
+                return validation_result
+
+            # 检查目标图层
+            if target_gdf is None or target_gdf.empty:
+                validation_result["valid"] = False
+                validation_result["errors"].append("目标图层为空")
+                return validation_result
+
+            # 检查坐标系
+            if polygons_gdf.crs != target_gdf.crs:
+                validation_result["warnings"].append("面图层和目标图层的坐标系不一致，可能影响分析精度")
+
+            # 检查数据范围重叠
+            polygons_bounds = polygons_gdf.total_bounds
+            target_bounds = target_gdf.total_bounds
+
+            # 简单检查边界框是否重叠
+            if (polygons_bounds[2] < target_bounds[0] or polygons_bounds[0] > target_bounds[2] or
+                polygons_bounds[3] < target_bounds[1] or polygons_bounds[1] > target_bounds[3]):
+                validation_result["warnings"].append("面图层和目标图层的空间范围不重叠")
+
+            # 统计信息
+            validation_result["info"] = {
+                "polygons_count": len(polygons_gdf),
+                "target_count": len(target_gdf),
+                "target_geom_types": target_gdf.geometry.geom_type.value_counts().to_dict(),
+                "polygons_crs": str(polygons_gdf.crs) if polygons_gdf.crs else "未定义",
+                "target_crs": str(target_gdf.crs) if target_gdf.crs else "未定义"
+            }
+
+        except Exception as e:
+            validation_result["valid"] = False
+            validation_result["errors"].append(f"验证过程中发生错误: {str(e)}")
+
+        return validation_result
+
 
 if __name__ == "__main__":
     # 测试代码
