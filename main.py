@@ -120,18 +120,19 @@ def show_version():
 SHP文件处理工具 v1.0.0
 
 主要功能:
-• MySQL数据库连接和查询
-• 空间坐标数据解析
-• 多种几何类型支持（点/线/面）
-• SHP文件导出
-• 图形化操作界面
+- MySQL数据库连接和查询
+- 空间坐标数据解析
+- 多种几何类型支持（点/线/面）
+- SHP文件导出
+- SHP文件合并工具
+- 图形化操作界面
 
 依赖库:
-• pandas - 数据处理
-• geopandas - 空间数据处理
-• shapely - 几何对象操作
-• pymysql - MySQL数据库连接
-• tkinter - 图形界面
+- pandas - 数据处理
+- geopandas - 空间数据处理
+- shapely - 几何对象操作
+- pymysql - MySQL数据库连接
+- tkinter - 图形界面
 
 使用方法:
 python main.py

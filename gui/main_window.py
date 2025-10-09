@@ -13,6 +13,7 @@ from gui.database_config_frame import DatabaseConfigFrame
 from gui.query_frame import QueryFrame
 from gui.field_selection_frame import FieldSelectionFrame
 from gui.export_frame import ExportFrame
+from gui.shapefile_merger_dialog import ShapefileMergerDialog
 
 
 class MainWindow:
@@ -181,6 +182,8 @@ class MainWindow:
         # 工具菜单
         tools_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="工具", menu=tools_menu)
+        tools_menu.add_command(label="SHP文件合并工具", command=self.show_shp_merger)
+        tools_menu.add_separator()
         tools_menu.add_command(label="坐标转换工具", command=self.show_coordinate_converter)
         tools_menu.add_command(label="SHP文件查看器", command=self.show_shp_viewer)
 
@@ -421,6 +424,14 @@ class MainWindow:
     def show_shp_viewer(self):
         """显示SHP文件查看器"""
         messagebox.showinfo("功能开发中", "SHP文件查看器正在开发中...")
+
+    def show_shp_merger(self):
+        """显示SHP文件合并工具"""
+        try:
+            merger_dialog = ShapefileMergerDialog(self.root)
+            self.root.wait_window(merger_dialog.window)
+        except Exception as e:
+            messagebox.showerror("错误", f"打开SHP文件合并工具失败：\n{e}")
 
     def show_help(self):
         """显示帮助信息"""
